@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "*.css": "tailwindcss",
+    "vector": "cpp",
+    "queue": "cpp",
+    "new": "cpp"
+  }
+}

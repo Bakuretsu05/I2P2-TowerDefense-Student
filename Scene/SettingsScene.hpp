@@ -17,6 +17,8 @@ public:
 
     void PlayOnClick(int stage);
 
+    void BackOnClick(int stage);
+
     void BGMSlideOnValueChanged(float value);
 
     void SFXSlideOnValueChanged(float value);
