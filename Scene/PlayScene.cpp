@@ -39,9 +39,9 @@ Engine::Point PlayScene::GetClientSize() {
 	return Engine::Point(MapWidth * BlockSize, MapHeight * BlockSize);
 }
 void PlayScene::Initialize() {
-	// TODO: [HACKATHON-3-BUG] (1/5): There's a bug in this file, which crashes the game when you lose. Try to find it.
-	// TODO: [HACKATHON-3-BUG] (2/5): Find out the cheat code to test.
-    // TODO: [HACKATHON-3-BUG] (2/5): It should generate a Plane, and add 10000 to the money, but it doesn't work now.
+	// TODO: [HACKATHON-3-BUG] (1/5): There's a bug in this file, which crashes the game when you lose. Try to find it. DONE
+	// TODO: [HACKATHON-3-BUG] (2/5): Find out the cheat code to test. DONE
+    // TODO: [HACKATHON-3-BUG] (2/5): It should generate a Plane, and add 10000 to the money, but it doesn't work now. DONE
 	mapState.clear();
 	keyStrokes.clear();
 	ticks = 0;
@@ -271,6 +271,7 @@ void PlayScene::OnKeyDown(int keyCode) {
 				++it;
 			}
 			EffectGroup->AddNewObject(new Plane());
+			EarnMoney(10000);
 		}
 	}
 	if (keyCode == ALLEGRO_KEY_Q) {
@@ -295,7 +296,7 @@ void PlayScene::Hit() {
 	lives--;
 	UILives->Text = std::string("Life ") + std::to_string(lives);
 	if (lives <= 0) {
-		Engine::GameEngine::GetInstance().ChangeScene("lose-scene");
+		Engine::GameEngine::GetInstance().ChangeScene("lose");
 	}
 }
 int PlayScene::GetMoney() const {
@@ -340,15 +341,17 @@ void PlayScene::ReadMap() {
 		}
 	}
 }
+#include <iostream>
 void PlayScene::ReadEnemyWave() {
-    // TODO: [HACKATHON-3-BUG] (3/5): Trace the code to know how the enemies are created.
-    // TODO: [HACKATHON-3-BUG] (3/5): There is a bug in these files, which let the game only spawn the first enemy, try to fix it.
+    // TODO: [HACKATHON-3-BUG] (3/5): Trace the code to know how the enemies are created. DONE
+    // TODO: [HACKATHON-3-BUG] (3/5): There is a bug in these files, which let the game only spawn the first enemy, try to fix it. DONE
     std::string filename = std::string("Resource/enemy") + std::to_string(MapId) + ".txt";
 	// Read enemy file.
 	float type, wait, repeat;
 	enemyWaveData.clear();
 	std::ifstream fin(filename);
 	while (fin >> type && fin >> wait && fin >> repeat) {
+		std::cout << "type: " << type << ", wait: " << wait << ", repeat: " << repeat << std::endl;
 		for (int i = 0; i < repeat; i++)
 			enemyWaveData.emplace_back(type, wait);
 	}
