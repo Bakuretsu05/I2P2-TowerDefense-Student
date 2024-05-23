@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <fstream>
+#include <sstream>
 
 #include "Engine/AudioHelper.hpp"
 #include "Engine/GameEngine.hpp"
@@ -24,8 +25,19 @@ void ScoreboardScene::Initialize() {
     Engine::ImageButton* btn;
 
     const int vertical_const = 100;
+    const int score_perPage = 10;
+    std::vector<ScoreboardScene::ScoreData> scores = getScoresFromTxt("Resource/scoreboard.txt");
 
     AddNewObject(new Engine::Label("Scoreboard", "pirulen.ttf", 50, halfW, halfH / 5 - 30, 10, 255, 255, 255, 0.5, 0.5));
+
+    for(int i = 1; i <= score_perPage; i++) {
+        std::stringstream buff;
+        buff << scores[i - 1] .name << " " << scores[i - 1].score;
+        std::string displayData;
+        std::getline(buff, displayData);
+
+        AddNewObject(new Engine::Label(displayData, "pirulen.ttf", 35, halfW, (i * 50) + vertical_const, 0, 230, 0, 255, 0.5, 0.5));
+    }
 
     btn = new Engine::ImageButton("stage-select/dirt.png", "stage-select/floor.png", halfW - 200,( halfH * 3 / 2 - 50) + vertical_const, 400, 100);
     btn->SetOnClickCallback(std::bind(&ScoreboardScene::BackOnClick, this, 2));
