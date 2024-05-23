@@ -25,7 +25,7 @@ void Slider::SetOnValueChangedCallback(std::function<void(float value)> onValueC
 }
 void Slider::SetValue(float value) {
 	if (this->value != value) {
-        // TODO: [HACKATHON-3-BUG] (5/5): Fix the function, so it can set the slider value correctly DONE??
+        // TODO: [HACKATHON-3-BUG] (5/5): Fix the function, so it can set the slider value correctly DONE
         Position.x = (1 - value) * Bar.Position.x + value * (Bar.Position.x + Bar.Size.x);
 		if (OnValueChangedCallback)
 			OnValueChangedCallback(value);
