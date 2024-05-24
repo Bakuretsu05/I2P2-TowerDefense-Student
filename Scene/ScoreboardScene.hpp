@@ -4,6 +4,10 @@
 #include <allegro5/allegro_audio.h>
 #include <memory>
 #include "Engine/IScene.hpp"
+#include <stack>
+#include <sstream>
+
+#define SCORES_PER_PAGE 10
 
 class Date {
 public:
@@ -25,6 +29,15 @@ public:
         year = atoi(year_str);
         month = atoi(month_str);
         day = atoi(day_str);
+    }
+
+    std::string getString() {
+        std::stringstream buff;
+        buff << year << "/" << month << "/" << day;
+        std::string ret;
+        std::getline(buff, ret);
+
+        return ret;
     }
 
     bool operator==(Date b) {
@@ -50,7 +63,9 @@ public:
 };
 
 class ScoreboardScene final : public Engine::IScene {
-    public:
+public:
+    explicit ScoreboardScene() = default;
+
     struct ScoreData {
         std::string name;
         int score;
@@ -59,12 +74,20 @@ class ScoreboardScene final : public Engine::IScene {
         Date date;
     };
 
-    explicit ScoreboardScene() = default;
     void Initialize() override;
     void Terminate() override;
     void BackOnClick(int stage);
 
     // return a vector array of ScoreData's (unsorted)
-    std::vector<struct ScoreData> getScoresFromTxt(const std::string& file_path);
+    std::vector<ScoreData> getScoresFromTxt(const std::string& file_path);
+
+    void incCurrentPage(int _);
+    void decCurrentPage(int _);
+
+private:
+    int current_page;
+    std::vector<ScoreData> scores;
+    std::stack<Engine::IObject*> currentlyShowedScores;
+    void drawScore();
 };
 #endif //INC_2024_I2P2_TOWERDEFENSE_WITH_ANSWER_SCOREBOARDSCENE_H
