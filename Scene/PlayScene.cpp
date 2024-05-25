@@ -257,6 +257,10 @@ void PlayScene::OnKeyDown(int keyCode) {
 	if (keyCode == ALLEGRO_KEY_TAB) {
 		DebugMode = !DebugMode;
 	}
+
+	if (keyCode == ALLEGRO_KEY_ALT){ // ! DEBUG FOR VICTORY. REMove THIS ON DEMO
+		Engine::GameEngine::GetInstance().ChangeScene("win");
+	}
 	else {
 		keyStrokes.push_back(keyCode);
 		if (keyStrokes.size() > code.size())
