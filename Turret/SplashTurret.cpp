@@ -9,9 +9,9 @@
 #include "Scene/PlayScene.hpp"
 #include "Engine/Point.hpp"
 
-const int SplashTurret::Price = 10;
+const int SplashTurret::Price = 150;
 SplashTurret::SplashTurret(float x, float y) :
-	Turret("play/tower-base.png", "play/SplashTurret.png", x, y, 150, Price, 0.5) {
+	Turret("play/tower-base.png", "play/SplashTurret.png", x, y, 250, Price, 0.9) {
 	// Move center downward, since we the turret head is slightly biased upward.
 	Anchor.y += 8.0f / GetBitmapHeight();
 }

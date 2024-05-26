@@ -23,11 +23,12 @@ void SplashBullet::OnExplode(Enemy* enemy) {
 	getPlayScene()->GroundEffectGroup->AddNewObject(new DirtyEffect("play/dirty-1.png", dist(rng), enemy->Position.x, enemy->Position.y));
 
     // fire 5 bullets from origin
-    for(int i = 0; i < 5; i++) {
-        Engine::Point diff = Engine::Point(cos(Rotation - ALLEGRO_PI / 2), sin(Rotation - ALLEGRO_PI / 2));
+    for(int i = 1; i <= 5; i++) {
+        Engine::Point diff = Engine::Point(cos(Rotation - ALLEGRO_PI / 2.5*i), sin(Rotation - ALLEGRO_PI / 2.5*i));
         float rotation = atan2(diff.y, diff.x);
         Engine::Point normalized = diff.Normalize();
-        // Change bullet position to the front of the gun barrel.
+
+        // Change bullet position 
         getPlayScene()->BulletGroup->AddNewObject(new FireBullet(Position + normalized * 36, diff, rotation, nullptr));
     }
 }
