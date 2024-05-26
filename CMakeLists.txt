@@ -98,6 +98,8 @@ add_executable(2024_I2P2_TowerDefense_with_answer
         Scene/ScoreboardScene.hpp
         # UI/Component/TextInput/TextInput.cpp
         # UI/Component/TextInput/TextInput.hpp
+        Bullet/SplashBullet.cpp
+        Bullet/SplashBullet.hpp
 )
 
 IF (WIN32)
