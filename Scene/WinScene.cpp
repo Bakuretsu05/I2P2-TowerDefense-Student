@@ -33,7 +33,6 @@ void WinScene::Initialize() {
 	btnName = new Engine::ImageButton("win/dirt.png", "win/floor.png", halfW - 200, 150, 400, 75);
 	btnName->SetOnClickCallback(std::bind(&WinScene::OnClickNameBtn, this));
 	AddNewControlObject(btnName);
-	
 
 	AddNewObject(TXT_Name = new Engine::Label(playerName, "pirulen.ttf", 35, 610, 175, 255, 255, 255, 255, 0.0, 0.0));
 

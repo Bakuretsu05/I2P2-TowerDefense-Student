@@ -1,0 +1,70 @@
+#include <functional>
+#include <memory>
+
+#include "Engine/Collider.hpp"
+#include "Engine/GameEngine.hpp"
+#include "UI/Component/Image.hpp"
+#include "UI/Component/Label.hpp"
+#include "TextInput.hpp"
+#include "Engine/Point.hpp"
+#include "Engine/Resources.hpp"
+#include <iostream>
+
+namespace Engine {
+	TextInput::TextInput(std::string img, std::string imgIn, float x, float y, float w, float h, float anchorX, float anchorY):
+		Image(img, x, y, w, h, anchorX, anchorY), 
+        imgOut(Resources::GetInstance().GetBitmap(img)), 
+        imgIn(Resources::GetInstance().GetBitmap(imgIn)) 
+    {
+		Point mouse = GameEngine::GetInstance().GetMousePosition();
+		mouseIn = Collider::IsPointInBitmap(Point((mouse.x - Position.x) * GetBitmapWidth() / Size.x + Anchor.x * GetBitmapWidth(), (mouse.y - Position.y) * GetBitmapHeight() / Size.y + Anchor.y * GetBitmapHeight()), bmp);
+		if (!mouseIn || !Enabled) bmp = imgOut;
+		else bmp = this->imgIn;
+
+        textInputObjectData.font = "pirulen.ttf";
+        textInputObjectData.fontSize = h/3.2;
+        textInputObjectData.x = x;
+        textInputObjectData.y = y;
+        textInputObjectData.r = 255;
+        textInputObjectData.g = 255;
+        textInputObjectData.b = 255;
+        textInputObjectData.a = 255;
+        textInputObjectData.anchorX = 0;
+        textInputObjectData.anchorY = 0;
+
+        textInputObject = new Label(textInput, "pirulen.ttf", h/3.2, x, y, 255, 255, 255, 0, 0);
+        AddNewObject(textInputObject);
+	}
+
+    bool TextInput::isInputting() { return Enabled; }
+
+	void TextInput::SetOnClickCallback(std::function<void(void)> onClickCallback) {
+		OnClickCallback = onClickCallback;
+	}
+
+	void TextInput::OnMouseDown(int button, int mx, int my) {
+		if ((button & 1) && mouseIn && Enabled) {
+			if (OnClickCallback)
+				OnClickCallback();
+		}
+	}
+
+    void TextInput::updateInput(int keyCode) {
+        std::cout << "Pressed " << keyCode << std::endl;
+
+        if(keyCode == 59) Enabled = false; // 59 = Escape
+        if(!Enabled) return;
+
+        if(keyCode == 63 && !textInput.empty()) { // 63 = Backspace
+            textInput.pop_back();   
+            RemoveObject(textInputObject->GetObjectIterator());
+        } 
+
+    }
+
+	void TextInput::OnMouseMove(int mx, int my) {
+		mouseIn = Collider::IsPointInBitmap(Point((mx - Position.x) * GetBitmapWidth() / Size.x + Anchor.x * GetBitmapWidth(), (my - Position.y) * GetBitmapHeight() / Size.y + Anchor.y * GetBitmapHeight()), bmp);
+		if (!mouseIn || !Enabled) bmp = imgOut;
+		else bmp = imgIn;
+	}
+}

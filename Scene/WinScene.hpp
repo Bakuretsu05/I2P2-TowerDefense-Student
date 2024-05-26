@@ -15,6 +15,7 @@ public:
 
 	string playerName = "PLAYER";
 	IObject * TXT_Name;
+
 	explicit WinScene() = default;
 	void Initialize() override;
 	void Terminate() override;
