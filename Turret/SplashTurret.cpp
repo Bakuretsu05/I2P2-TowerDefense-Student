@@ -9,7 +9,7 @@
 #include "Scene/PlayScene.hpp"
 #include "Engine/Point.hpp"
 
-const int SplashTurret::Price = 150;
+const int SplashTurret::Price = 50;
 SplashTurret::SplashTurret(float x, float y) :
 	Turret("play/tower-base.png", "play/SplashTurret.png", x, y, 250, Price, 0.9) {
 	// Move center downward, since we the turret head is slightly biased upward.

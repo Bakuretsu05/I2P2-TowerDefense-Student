@@ -5,6 +5,8 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
+using namespace std;
 
 #include "Engine/AudioHelper.hpp"
 #include "Engine/GameEngine.hpp"
@@ -17,8 +19,17 @@
 #include "Scene/ScoreboardScene.hpp"
 #include "Engine/LOG.hpp"
 
+static bool CompareScoreBoard(ScoreData& a, ScoreData& b){
+    return a.score > b.score;
+}
 
 void ScoreboardScene::Initialize() {
+    scores.clear();
+    while (currentlyShowedScores.empty() == false){
+        currentlyShowedScores.pop();
+    }
+
+    current_page = 1;
     int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
     int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
     int halfW = w / 2;
@@ -27,7 +38,10 @@ void ScoreboardScene::Initialize() {
 
     const int vertical_const = 100;
     current_page = 0;
-    scores = getScoresFromTxt("Resource/scoreboard.txt");
+    getScoresFromTxt("Resource/scoreboard.txt");
+
+    // * Sort the scores
+    sort(scores.begin(), scores.end(), CompareScoreBoard);
 
     AddNewObject(new Engine::Label("Scoreboard", "pirulen.ttf", 50, halfW, halfH / 5 - 30, 10, 255, 255, 255, 0.5, 0.5));
 
@@ -72,7 +86,7 @@ void ScoreboardScene::drawScore() {
 
     for(int i = current_page * SCORES_PER_PAGE; i < scores.size() && i < (current_page + 1) * SCORES_PER_PAGE; i++) {
         std::stringstream buff;
-        buff << scores[i].name << " " << scores[i].score << " ... <" << scores[i].date.getString() << ">";
+        buff << scores[i].name << " " << scores[i].score << " ... <" << scores[i].date << ">";
         std::string displayData;
         std::getline(buff, displayData);
 
@@ -99,10 +113,10 @@ void ScoreboardScene::decCurrentPage(int _) {
 }
 
 // The format of the .txt => {name} {score} {life} {time_spent} {date: yyyy-mm-dd}
-std::vector<ScoreboardScene::ScoreData> ScoreboardScene::getScoresFromTxt(const std::string& file_path) {
+void ScoreboardScene::getScoresFromTxt(const std::string& file_path) {
     std::ifstream scoresF; 
     scoresF.open(file_path);
-    std::vector<ScoreboardScene::ScoreData> score_datas;
+    scores.clear();
 
     if(scoresF.is_open()) {
         int i = 1;
@@ -111,18 +125,23 @@ std::vector<ScoreboardScene::ScoreData> ScoreboardScene::getScoresFromTxt(const 
             std::string name;
             int score;
             int life;
-            int time_spent;
             std::string date;
 
-            scoresF >> name >> score >> life >> time_spent >> date;
+            scoresF >> name >> score >> life >> date;
 
-            ScoreboardScene::ScoreData newData{name, score, life, time_spent, Date(date)};
-            score_datas.push_back(newData);
+            std::cout << "<======================>" << std::endl;
+            std::cout << "name: " << name << std::endl;
+            std::cout << "score: " << score << std::endl;
+            std::cout << "life: " << life << std::endl;
+            std::cout << "date: " << date << std::endl << std::endl;
+
+            if(name.size() == 0) continue;
+
+            ScoreData newData{name, score, life, date};
+            scores.push_back(newData);
         }
         scoresF.close();
     }
     else Engine::LOG(Engine::ERROR) << "Failed to open \"" << file_path << "\'"; 
-
-    return score_datas;
 }
 

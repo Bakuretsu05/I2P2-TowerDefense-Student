@@ -62,31 +62,32 @@ public:
 
 };
 
+struct ScoreData {
+    std::string name;
+    int score;
+    int life;
+    std::string date; 
+};
+
+
 class ScoreboardScene final : public Engine::IScene {
 public:
     explicit ScoreboardScene() = default;
 
-    struct ScoreData {
-        std::string name;
-        int score;
-        int life;
-        int time_spent;
-        Date date;
-    };
 
     void Initialize() override;
     void Terminate() override;
     void BackOnClick(int stage);
 
     // return a vector array of ScoreData's (unsorted)
-    std::vector<ScoreData> getScoresFromTxt(const std::string& file_path);
+    void getScoresFromTxt(const std::string& file_path);
 
     void incCurrentPage(int _);
     void decCurrentPage(int _);
 
 private:
     int current_page;
-    std::vector<ScoreData> scores;
+    std::vector<ScoreData>  scores;
     std::stack<Engine::IObject*> currentlyShowedScores;
     void drawScore();
 };

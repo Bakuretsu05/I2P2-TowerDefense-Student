@@ -26,6 +26,7 @@ private:
 	};
 	ALLEGRO_SAMPLE_ID bgmId;
 	std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> deathBGMInstance;
+	int score;
 protected:
 	int lives;
 	int money;

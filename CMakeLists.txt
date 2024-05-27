@@ -100,6 +100,8 @@ add_executable(2024_I2P2_TowerDefense_with_answer
         # UI/Component/TextInput/TextInput.hpp
         Bullet/SplashBullet.cpp
         Bullet/SplashBullet.hpp
+        Enemy/RegenerationEnemy.cpp
+        Enemy/RegenerationEnemy.hpp
 )
 
 IF (WIN32)

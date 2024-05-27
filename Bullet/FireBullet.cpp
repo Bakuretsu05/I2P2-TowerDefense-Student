@@ -13,7 +13,7 @@ class Turret;
 
 FireBullet::FireBullet(Engine::Point position, Engine::Point forwardDirection, float rotation, Turret* parent = nullptr) :
 	Bullet("play/bullet-1.png", 500, 1, position, forwardDirection, rotation - ALLEGRO_PI / 2, parent) {
-	// TODO: [CUSTOM-TOOL] You can imitate the 2 files: 'FireBullet.hpp', 'FireBullet.cpp' to create a new bullet.
+	// TODO: [CUSTOM-TOOL] You can imitate the 2 files: 'FireBullet.hpp', 'FireBullet.cpp' to create a new bullet. DONE
 }
 void FireBullet::OnExplode(Enemy* enemy) {
 	std::random_device dev;

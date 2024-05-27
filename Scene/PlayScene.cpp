@@ -6,6 +6,7 @@
 #include <vector>
 #include <queue>
 #include <string>
+#include <iostream>
 #include <memory>
 
 #include "Engine/AudioHelper.hpp"
@@ -24,7 +25,9 @@
 #include "Engine/Resources.hpp"
 #include "Enemy/SoldierEnemy.hpp"
 #include "Enemy/TankEnemy.hpp"
+#include "Enemy/RegenerationEnemy.hpp"
 #include "Turret/TurretButton.hpp"
+#include "Scene/WinScene.hpp"
 
 bool PlayScene::DebugMode = false;
 const std::vector<Engine::Point> PlayScene::directions = { Engine::Point(-1, 0), Engine::Point(0, -1), Engine::Point(1, 0), Engine::Point(0, 1) };
@@ -141,7 +144,17 @@ void PlayScene::Update(float deltaTime) {
 				delete EffectGroup;
 				delete UIGroup;
 				delete imgTarget;*/
+
+				score = lives * (money * 10);
+
 				Engine::GameEngine::GetInstance().ChangeScene("win");
+                WinScene * scene = dynamic_cast<WinScene *>(Engine::GameEngine::GetInstance().GetScene("win"));
+                if (scene != nullptr) {
+					std::cout << "score: " << this->score << std::endl;
+					std::cout << "lives: " << this->score << std::endl;
+                    scene->score = this->score;
+					scene->life = this->lives;
+                }
 			}
 			continue;
 		}
@@ -162,9 +175,12 @@ void PlayScene::Update(float deltaTime) {
 		case 3:
 			EnemyGroup->AddNewObject(enemy = new TankEnemy(SpawnCoordinate.x, SpawnCoordinate.y));
 			break;
-        // TODO: [CUSTOM-ENEMY]: You need to modify 'Resource/enemy1.txt', or 'Resource/enemy2.txt' to spawn the 4th enemy.
+		case 4:
+			EnemyGroup->AddNewObject(enemy = new RegenerationEnemy(SpawnCoordinate.x, SpawnCoordinate.y));
+			break;
+        // TODO: [CUSTOM-ENEMY]: You need to modify 'Resource/enemy1.txt', or 'Resource/enemy2.txt' to spawn the 4th enemy. DONE
         //         The format is "[EnemyId] [TimeDelay] [Repeat]".
-        // TODO: [CUSTOM-ENEMY]: Enable the creation of the enemy.
+        // TODO: [CUSTOM-ENEMY]: Enable the creation of the enemy. DONE
 		default:
 			continue;
 		}
@@ -260,7 +276,7 @@ void PlayScene::OnKeyDown(int keyCode) {
 	}
 
 	if (keyCode == ALLEGRO_KEY_ALT){ // ! DEBUG FOR VICTORY. REMove THIS ON DEMO
-		Engine::GameEngine::GetInstance().ChangeScene("win");
+		enemyWaveData.clear();
 	}
 	else {
 		keyStrokes.push_back(keyCode);

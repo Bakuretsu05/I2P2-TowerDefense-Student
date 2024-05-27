@@ -11,7 +11,8 @@ private:
 	float ticks;
 	ALLEGRO_SAMPLE_ID bgmId;
 public:
-
+	int score;
+	int life;
 
 	string playerName = "PLAYER";
 	IObject * TXT_Name;

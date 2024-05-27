@@ -1,4 +1,5 @@
 #include <functional>
+#include <vector>
 #include <string>
 #include <iostream>
 #include "Engine/AudioHelper.hpp"
@@ -9,6 +10,9 @@
 #include "PlayScene.hpp"
 #include "Engine/Point.hpp"
 #include "WinScene.hpp"
+#include "ScoreboardScene.hpp"
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -85,7 +89,95 @@ void WinScene::Update(float deltaTime) {
 		bgmId = AudioHelper::PlayBGM("happy.ogg");
 	}
 }
+
+std::vector<struct ScoreData> getScores(const std::string& filePath) {
+    std::ifstream scoresF; 
+    scoresF.open(filePath);
+    std::vector<struct ScoreData> score_datas;
+
+    if(scoresF.is_open()) {
+        int i = 1;
+        while(scoresF.peek() != EOF) {
+            std::string name;
+            int score;
+            int life;
+            std::string date;
+
+            scoresF >> name >> score >> life >> date;
+
+            ScoreData newData{name, score, life, date};
+            score_datas.push_back(newData);
+        }
+        scoresF.close();
+    }
+
+    return score_datas;
+}
+
+#include <iostream>
+#include <chrono>
+#include <iomanip>
+#include <ctime>
+#include <string>
+#include <sstream>
+#include "getDate.hpp"
+
+std::string getCurrentDate() {
+    // Get the current time as a time_point
+    auto now = std::chrono::system_clock::now();
+
+    // Convert to time_t, which represents the time in seconds since epoch
+    std::time_t now_time_t = std::chrono::system_clock::to_time_t(now);
+
+    // Convert to a tm structure for local time
+    std::tm* now_tm = std::localtime(&now_time_t);
+
+    // Extract year, month, day, hours, and minutes
+    int year = now_tm->tm_year + 1900; // tm_year is years since 1900
+    int month = now_tm->tm_mon + 1;    // tm_mon is months since January (0-11)
+    int day = now_tm->tm_mday;
+    int hours = now_tm->tm_hour;
+    int minutes = now_tm->tm_min;
+
+    std::stringstream buff;
+
+    // Output the date and time
+    buff << year << "/" << month << "/" << day << "," << hours << ":" << minutes;
+
+    std::string ret;
+    getline(buff, ret);
+
+    return ret;
+}
+
 void WinScene::BackOnClick(int stage) {
 	// Change to select scene.
 	Engine::GameEngine::GetInstance().ChangeScene("stage-select");
+	std::vector<ScoreData> scores = getScores("Resource/scoreboard.txt");
+
+	cout << "playerName: " << playerName << endl;
+	cout << "score: " << score << endl;
+	cout << "life: " << life << endl;
+
+
+	ScoreData newData{playerName, score, life, getCurrentDate()};
+	scores.push_back(newData);
+	cout << "getCurrentDate(): " << newData.date << endl;
+
+	std::ofstream writeF("Resource/scoreboard.txt");
+	if(writeF.is_open()) {
+		for(auto& data : scores) {
+			if(data.name.size() == 0) continue;
+            std::cout << "<win ======================>" << std::endl;
+            std::cout << "name: " << data.name << std::endl;
+            std::cout << "score: " << data.score << std::endl;
+            std::cout << "life: " << data.life << std::endl;
+            std::cout << "date: " << data.date << std::endl << std::endl;
+
+			if(data.name.size() == 0 || data.date.size() == 0) continue;
+			writeF << data.name << " " << data.score << " " << data.life << " " << data.date << endl;
+		}
+	}
+
+	writeF.close();
 }
